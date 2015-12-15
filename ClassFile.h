@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <vector>
-#include "ConstantPool.h"
+#include "JavaConstantPool.h"
 
 namespace jwasm {
     

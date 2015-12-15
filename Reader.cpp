@@ -68,6 +68,16 @@ int32_t Reader::readS4() {
     return tmp | ((int32_t)readU2());
 }
 
+uint64_t Reader::readU8() {
+    uint64_t tmp = ((uint64_t)readU4()) << 32;
+    return tmp | ((uint64_t)readU4());
+}
+
+int64_t Reader::readS8() {
+    int64_t tmp = ((int64_t)readS4()) << 32;
+    return tmp | ((int64_t)readU4());
+}
+
 
 
 

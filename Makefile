@@ -1,8 +1,8 @@
-all: bytecode2wasm
+all: jwasm
 
 OBJ = Reader.o BytecodeDecoder.o
 
-bytecode2wasm: bytecode2wasm.cpp $(OBJ)
+jwasm: jwasm.cpp $(OBJ)
 	g++ $< -o $@ $(OBJ)
 
 BytecodeDecoder.o: BytecodeDecoder.cpp
@@ -12,5 +12,5 @@ Reader.o: Reader.cpp
 	g++ $< -c -o $@
 
 clean:
-	rm bytecode2wasm
+	rm jwasm
 	rm $(OBJ)

@@ -3,11 +3,15 @@
 
 #include "BytecodeDecoder.h"
 #include "Reader.h"
-#include "ConstantPool.h"
+#include "JavaConstantPool.h"
 #include "ClassFile.h"
 
+/* for debug */
+#include <string.h>
+#include "debug.h"
+
 #define MAGIC_NUMBER 0xcafebabe
-#define debug
+#define JWASM_LOAD 4
 
 using namespace jwasm;
 
@@ -44,10 +48,11 @@ void BytecodeDecoder::readConstantPool() {
     unsigned short constant_pool_count;
     constant_pool_count = reader.readU2();
     javaClass.constant_pool_count = constant_pool_count;
-    printf("constant_pool_count = %hd\n", constant_pool_count);
+    PRINT_DEBUG(JWASM_LOAD, 3, LIGHT_RED, "constant_pool_count = %d\n", constant_pool_count);
     int count = 0;
     while (count < constant_pool_count - 1) {
         char tag = reader.readU1();
+        printf("tag = %02x\n", tag);
         switch (tag) {
             case CONSTANT_CLASS:
                 CONSTANT_Class_info class_info;
@@ -120,6 +125,10 @@ void BytecodeDecoder::readConstantPool() {
                 utf8_info.length = reader.readU2();
                 utf8_info.bytes = reader.getCursor();
                 reader.move(utf8_info.length);
+                char buf[1024];
+                memcpy(buf, utf8_info.bytes, utf8_info.length);
+                buf[utf8_info.length] = '\0';
+                printf("CONSTANT_UTF8 = %s\n", buf);
                 break;
             case CONSTANT_METHODHANDLE:
                 CONSTANT_MethodHandle_info methodhandle_info;
@@ -174,7 +183,7 @@ void BytecodeDecoder::resolveAttrubutes(std::vector<JavaAttribute>& attributes, 
         uint16_t& count) {
     unsigned short attributes_count = reader.readU2();
     count = attributes_count;
-    printf("attributes_count = %d\n", attributes_count);
+    PRINT_DEBUG(JWASM_LOAD, 3, LIGHT_RED, "attributes_count = %d\n", attributes_count);
     for (unsigned short i = 0; i < attributes_count; i++) {
         JavaAttribute attribute;
         attribute.attribute_name_index = reader.readU2();
@@ -182,30 +191,33 @@ void BytecodeDecoder::resolveAttrubutes(std::vector<JavaAttribute>& attributes, 
         attribute.start = reader.getCursor();
         reader.move(attribute.attribute_length);
         attributes.push_back(attribute);
+        printf("attribute_name_index = %d\n", attribute.attribute_name_index);
     }
 }
 
 void BytecodeDecoder::readFields() {
     unsigned short fields_count = reader.readU2();
-    printf("fields_count = %d\n", fields_count);
+    PRINT_DEBUG(JWASM_LOAD, 3, LIGHT_RED, "fields_count = %d\n", fields_count);
     for (unsigned short i = 0; i < fields_count; i++) {
         JavaField field;
         field.access_flags = reader.readU2();
         field.name_index = reader.readU2();
         field.descriptor_index = reader.readU2();
-        resolveAttrubutes(field.attributes, reader, javaClass.fields_count);        
+        resolveAttrubutes(field.attributes, reader, javaClass.fields_count);       
+        javaClass.fields.push_back(field);
     }
 }
 
 void BytecodeDecoder::readMethods() {
     unsigned short methods_count = reader.readU2();
-    printf("methods_count = %d\n", methods_count);
+    PRINT_DEBUG(JWASM_LOAD, 3, LIGHT_RED, "methods_count = %d\n", methods_count);
     for (unsigned short i = 0; i < methods_count; i++) {
         JavaMethod method;
         method.access_flags = reader.readU2();
         method.name_index = reader.readU2();
         method.descriptor_index = reader.readU2();
         resolveAttrubutes(method.attributes, reader, javaClass.methods_count);
+        javaClass.methods.push_back(method);
     }
 }
 

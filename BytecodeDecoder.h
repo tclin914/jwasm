@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Reader.h"
-#include "ConstantPool.h"
+#include "JavaConstantPool.h"
 #include "ClassFile.h"
 #include <vector>
 
