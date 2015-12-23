@@ -20,6 +20,9 @@ namespace jwasm {
 #define ACC_SYNTHETIC    0x1000
 #define ACC_ENUM         0x4000
 
+#define JWASM_CLASS      0x10000
+#define JWASM_ARRAY      0x20000
+#define JWASM_PRIMITIVE  0x40000
 
 #define ACC_VERIFIER(name, flag)               \
     inline bool name(unsigned int param) {     \
@@ -32,7 +35,7 @@ ACC_VERIFIER(isInterface, ACC_INTERFACE)
 ACC_VERIFIER(isSynchro,   ACC_SYNCHRONIZED)
 ACC_VERIFIER(isPublic,    ACC_PUBLIC)
 ACC_VERIFIER(isPrivate,   ACC_PRIVATE)
-ACC_VERIFIER(isAbstract,  ACC_ABSTRACE)
+ACC_VERIFIER(isAbstract,  ACC_ABSTRACT)
 ACC_VERIFIER(isProtected, ACC_PROTECTED)
 ACC_VERIFIER(isFinal,     ACC_FINAL)
 ACC_VERIFIER(isSuper,     ACC_SUPER)
@@ -42,6 +45,10 @@ ACC_VERIFIER(isEnum,      ACC_ENUM)
 inline bool isVirtual(unsigned int param) {
     return !(ACC_STATIC & param);
 }
+
+ACC_VERIFIER(isClass,     JWASM_CLASS)
+ACC_VERIFIER(isPrimitive, JWASM_PRIMITIVE)
+ACC_VERIFIER(isArray,     JWASM_ARRAY)
 
 #undef ACC_VERIFIER
 

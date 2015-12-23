@@ -1,6 +1,7 @@
 #ifndef JWASM_UTF8_H
 #define JWASM_UTF8_H
 
+#include <iostream>
 #include <stdint.h>
 #include <string.h>
 #include <map>
@@ -13,7 +14,7 @@ namespace jwasm {
         friend class UTF8Map;
 
         public:
-            UTF8(int32_t) { size = n;}
+            UTF8(int32_t n) { size = n;}
 
             int32_t size;
 
@@ -27,7 +28,7 @@ namespace jwasm {
                 else return !memcmp(elements, other->elements, size * sizeof(uint16_t));
             }
 
-            bool lessThan(const UTF8* other) cosnt {
+            bool lessThan(const UTF8* other) const {
                 if (size < other->size) return true;
                 else if (size > other->size) return false;
                 else return memcmp((const char*)elements, (const char*)other->elements, 
@@ -38,37 +39,37 @@ namespace jwasm {
 
             uint32_t hash() const { return readerHasher(elements, size); }
 
-            friend std::ostream& operator << (std:ostream&, const UTF8&);
+            friend std::ostream& operator << (std::ostream&, const UTF8&);
             void dump() const __attribute__((noinline));
             int compare(const char*) const;
             std::string& toString(std::string& buffer) const;
     };
 
     struct UTF8MapKey {
-        ssize_t length;
+        size_t length;
         const uint16_t* data;
 
-        UTF8MapKey(const uint16_t* d, ssize_t l) {
+        UTF8MapKey(const uint16_t* d, size_t l) {
             data = d;
             length = l;
         }
-    }
+    };
 
     class UTF8Map {
         public:
-            typedef map<UTF8MapKey, const UTF8*>::iterator iterator;
-            map<UTF8MapKey, const UTF8*> map;
+            typedef std::map<UTF8MapKey, const UTF8*>::iterator iterator;
+            std::map<UTF8MapKey, const UTF8*> map;
 
             const UTF8* lookupOrCreateAsciiz(const char* asciiz);
             const UTF8* lookupOrCreateReader(const uint16_t* buf, uint32_t size);
             const UTF8* lookupAsciiz(const char* asciiz);
             const UTF8* lookupReader(const uint16_t* buf, uint32_t size);
 
-            UTF8Map(map<UTF8MapKey, const UTF8*>* m) : map(*m) {}
+            UTF8Map(std::map<UTF8MapKey, const UTF8*>* m) : map(*m) {}
     
             //TODO:
             ~UTF8Map() {}
-    }
+    };
 
 }
 

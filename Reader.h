@@ -28,11 +28,4 @@ namespace jwasm {
 
 }
 
-
-
-
-
-
 #endif
-
-
