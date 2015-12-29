@@ -53,6 +53,10 @@ namespace jwasm {
             data = d;
             length = l;
         }
+
+        bool operator < (const UTF8MapKey& other) const {
+            return data == other.data;
+        }
     };
 
     class UTF8Map {

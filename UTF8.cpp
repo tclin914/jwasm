@@ -1,8 +1,11 @@
+#include <stdlib.h>
 #include "UTF8.h"
+
+namespace jwasm {
 
 const UTF8* UTF8::extract(UTF8Map* map, uint32_t start, uint32_t end) const {
     uint32_t len = end - start;
-    uint16_t* buf = (uint16_t)malloc(sizeof(uint16_t) * len);
+    uint16_t* buf = (uint16_t*)malloc(sizeof(uint16_t) * len);
 
     for (uint32_t i = 0; i < len; i++) {
         buf[i] = elements[i + start];
@@ -46,8 +49,8 @@ std::ostream& operator << (std::ostream& os, const UTF8& utf8) {
     return os;
 }
 
-void UTF::dump() const {
-    cerr << (const void*)this << "=\"" << *this << '\"' << endl;
+void UTF8::dump() const {
+    std::cerr << (const void*)this << "=\"" << *this << '\"' << std::endl;
 }
 
 const UTF8* UTF8Map::lookupOrCreateAsciiz(const char* asciiz) {
@@ -63,7 +66,7 @@ const UTF8* UTF8Map::lookupOrCreateReader(const uint16_t* buf, uint32_t len) {
     int32_t size = (int32_t)len;
     UTF8MapKey key(buf, size);
 
-    const UTF8* res = map.find(key);
+    const UTF8* res = map.find(key)->second;
     if (res == NULL) {
         UTF8* tmp = new UTF8(size);
         memcpy(tmp->elements, buf, sizeof(uint16_t) * len);
@@ -86,8 +89,8 @@ const UTF8* UTF8Map::lookupAsciiz(const char* asciiz) {
 const UTF8* UTF8Map::lookupReader(const uint16_t* buf, uint32_t len) {
     int32_t size = (int32_t)len;
     UTF8MapKey key(buf, size);
-    const UTF8* res = map.find(key);
+    const UTF8* res = map.find(key)->second;
     return res;
 }
 
-
+}
