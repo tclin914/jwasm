@@ -66,8 +66,11 @@ const UTF8* UTF8Map::lookupOrCreateReader(const uint16_t* buf, uint32_t len) {
     int32_t size = (int32_t)len;
     UTF8MapKey key(buf, size);
 
-    const UTF8* res = map.find(key)->second;
-    if (res == NULL) {
+    std::map<UTF8MapKey, const UTF8*>::iterator it;
+    it = map.find(key);
+
+    const UTF8* res = it->second;
+    if (it == map.end()) {
         UTF8* tmp = new UTF8(size);
         memcpy(tmp->elements, buf, sizeof(uint16_t) * len);
         res = (const UTF8*)tmp;

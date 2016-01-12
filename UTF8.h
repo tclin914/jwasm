@@ -19,6 +19,7 @@ namespace jwasm {
             int32_t size;
 
             uint16_t elements[1];
+            // uint16_t* elements;
 
             const UTF8* extract(UTF8Map* map, uint32_t start, uint32_t len) const;
 
@@ -55,7 +56,19 @@ namespace jwasm {
         }
 
         bool operator < (const UTF8MapKey& other) const {
-            return data == other.data;
+            int diff = length - other.length;
+            if (diff > 0) 
+                return false;
+            else if (diff < 0)
+                return true;
+            for (uint32_t i = 0; i < length; ++i) {
+                diff = data[i] - other.data[i];
+                if (diff > 0) 
+                    return false;
+                else if (diff < 0)
+                    return true;
+            }
+            return false;
         }
     };
 

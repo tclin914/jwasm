@@ -40,8 +40,7 @@ void mainCompilerStart(const char* name) {
     JavaClassLoader* loader = new JavaClassLoader();
    
     int size = strlen(name);
-    if (size > 4 && (!strcmp(&name[size - 4], ".jar") || !strcmp(&name[size - 6], ".class"))) {
-
+    if (size > 4 && (!strcmp(&name[size - 4], ".jar") || !strcmp(&name[size - 4], ".zip"))) {
 
 
     } else {
@@ -53,13 +52,8 @@ void mainCompilerStart(const char* name) {
         } else {
             memcpy(realName, name, size + 1);
         }
-            
+           
         const UTF8* utf8 = loader->asciizConstructUTF8(realName);
-    
-    
-    
+        utf8->dump();    
     }
-
-
-
 }
