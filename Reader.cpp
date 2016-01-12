@@ -1,51 +1,48 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include <cstdio>
+#include <cstdlib>
+#include <assert.h>
 #include "Reader.h"
-
 
 using namespace jwasm;
 
-Reader::Reader(const char* path) {
+ClassBytes* Reader::openFile(JavaClassLoader* loader, const char* path) {
+    ClassBytes* res = NULL;
     FILE* fp = fopen(path, "r");
-    if (!fp) {
-        fprintf(stderr, "Can not open %s\n", path);
-        exit(1);
+    if (fp != 0) {
+        fseek(fp, 0, SEEK_END);
+        long len = ftell(fp);
+        fseek(fp, 0, SEEK_SET);
+        res = new ClassBytes(len);
+        if (fread(res->elements, len, 1, fp) == 0) {
+            fprintf(stderr, "fread error\n");
+            exit(1);
+        }
+        fclose(fp);
     }
-
-    fseek(fp, 0, SEEK_END);
-    size_t fsize = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-
-    data = (unsigned char*)malloc(fsize);
-
-    if (!data) {
-        fprintf(stderr, "Unable to alloc %zd bytes\n", fsize);
-        exit(1);
-    }
-    if (fread(data, 1, fsize, fp) != fsize) {
-        fprintf(stderr, "Unable to read %zd bytes from %s\n", fsize, path);
-        exit(1);
-    }
+    return res;
 }
 
-unsigned char* Reader::getCursor() {
-    return data;
-}
+void Reader::seek(uint32_t pos, int from) {
+    uint32_t n = 0;
+    uint32_t start = min;
+    uint32_t end = max;
 
-void Reader::move(int c) {
-    data += c;
+    if (from == SEEK_CUR) n = cursor + pos;
+    else if (from == SEEK_SET) n = start + pos;
+    else if (from == SEEK_END) n = end + pos;
+
+    assert(n >= start && n <=end && "out fo range");
+    cursor = n;
 }
 
 uint8_t Reader::readU1() {
-    ++data;
-    return *(data - 1);
+    ++cursor;
+    return bytes->elements[cursor - 1];
 }
 
 int8_t Reader::readS1() {
-    ++data;
-    return *(data - 1);
+    ++cursor;
+    return bytes->elements[cursor - 1];
 }
 
 uint16_t Reader::readU2() {
@@ -77,14 +74,4 @@ int64_t Reader::readS8() {
     int64_t tmp = ((int64_t)readS4()) << 32;
     return tmp | ((int64_t)readU4());
 }
-
-
-
-
-
-
-
-
-
-
 
