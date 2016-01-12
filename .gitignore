@@ -1,3 +1,4 @@
 jwasm
 Reader.o
 UTF8.o
+JavaClassLoader.o
