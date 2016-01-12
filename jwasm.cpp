@@ -19,17 +19,8 @@ int main(int argc, const char *argv[]) {
         return 1;
     }
 
-    // JavaClass javaClass;
-    // Reader reader(argv[1]);
-    // BytecodeDecoder bytecodedecoder(reader, javaClass);
-
-    // for (std::vector<JavaMethod>::iterator i = javaClass.methods.begin(), 
-            // e = javaClass.methods.end(); i !=e; i++) {
-    // } 
-
     mainCompilerStart(argv[1]);
 
-    
     return 0;
 }
 
@@ -55,5 +46,7 @@ void mainCompilerStart(const char* name) {
            
         const UTF8* utf8 = loader->asciizConstructUTF8(realName);
         utf8->dump();    
+        JavaClass* cl = loader->loadName(utf8, true, true);
+
     }
 }
