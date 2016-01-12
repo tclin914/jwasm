@@ -59,7 +59,7 @@ namespace jwasm {
             }
     };
 
-    class JavaClass : CommonJavaClass {
+    class JavaClass : public CommonJavaClass {
         public:
             JavaClass(JavaClassLoader* loader, const UTF8* name);
             ~JavaClass();
