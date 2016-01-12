@@ -33,7 +33,7 @@ namespace jwasm {
                 if (size < other->size) return true;
                 else if (size > other->size) return false;
                 else return memcmp((const char*)elements, (const char*)other->elements, 
-                        size * sizeof(uint16_t)) < 0;
+                        sizeof(uint16_t) * size) < 0;
             }
 
             static uint32_t readerHasher(const uint16_t* buf, int32_t size);
@@ -56,19 +56,9 @@ namespace jwasm {
         }
 
         bool operator < (const UTF8MapKey& other) const {
-            int diff = length - other.length;
-            if (diff > 0) 
-                return false;
-            else if (diff < 0)
-                return true;
-            for (uint32_t i = 0; i < length; ++i) {
-                diff = data[i] - other.data[i];
-                if (diff > 0) 
-                    return false;
-                else if (diff < 0)
-                    return true;
-            }
-            return false;
+            if (length < other.length) return true;
+            else if (length > other.length) return false;
+            else return memcmp((const char*)data, (const char*)other.data, sizeof(uint16_t) * length);
         }
     };
 
