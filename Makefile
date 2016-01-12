@@ -1,9 +1,8 @@
 all: jwasm
 
-# OBJ = Reader.o BytecodeDecoder.o
-OBJ = JavaClassLoader.o UTF8.o
+OBJ = JavaClassLoader.o UTF8.o Reader.o
 
-jwasm: jwasm.cpp $(OBJ)
+jwasm: jwasm.cpp $(OBJ) 
 	g++ $< -o $@ $(OBJ)
 
 JavaClassLoader.o: JavaClassLoader.cpp
@@ -12,11 +11,8 @@ JavaClassLoader.o: JavaClassLoader.cpp
 UTF8.O: UTF8.cpp
 	g++ $< -c -o $@
 
-# BytecodeDecoder.o: BytecodeDecoder.cpp
-	# g++ $< -c -o $@
-
-# Reader.o: Reader.cpp
-	# g++ $< -c -o $@
+Reader.o: Reader.cpp
+	g++ $< -c -o $@
 
 clean:
 	rm jwasm
