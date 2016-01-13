@@ -16,6 +16,12 @@ JavaClassLoader::JavaClassLoader() {
     classes = new ClassMap();
 }
 
+JavaClassLoader::~JavaClassLoader() {
+//TODO
+}
+
+
+
 const UTF8* JavaClassLoader::asciizConstructUTF8(const char* asciiz) {
     return hashUTF8->lookupOrCreateAsciiz(asciiz);
 }
@@ -62,3 +68,8 @@ JavaClass* JavaClassLoader::constructClass(const UTF8* name, ClassBytes* bytes) 
     return res;
 }
 
+CommonJavaClass* JavaClassLoader::lookupClassOrArray(const UTF8* name) {
+    CommonJavaClass* cl = lookupClass(name);
+    if (cl) return cl;
+    return NULL;
+}

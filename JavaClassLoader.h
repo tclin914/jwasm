@@ -20,7 +20,8 @@ namespace jwasm {
             CommonJavaClass* lookupClass(const UTF8* name);
             ClassBytes* openName(const UTF8* name);
             JavaClass* constructClass(const UTF8* name, ClassBytes* bytes);
-        private:
+            CommonJavaClass* lookupClassOrArray(const UTF8* name);
+
             UTF8Map* hashUTF8;
             ClassMap* classes;
     };

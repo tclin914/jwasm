@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <cstdlib>
 #include "UTF8.h"
 
 namespace jwasm {

@@ -49,4 +49,6 @@ void mainCompilerStart(const char* name) {
         JavaClass* cl = loader->loadName(utf8, true, true);
 
     }
+
+    delete loader;
 }

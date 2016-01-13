@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdint.h>
 #include <string.h>
+#include <cstdio>
 #include <map>
 
 namespace jwasm {
@@ -78,6 +79,26 @@ namespace jwasm {
             ~UTF8Map() {}
     };
 
+    class UTF8Buffer {
+        public:
+            char* contents;
+
+            UTF8Buffer(const UTF8* val) {
+                contents = new char[val->size + 1];
+                for (int i = 0; i < val->size; i++) {
+                    contents[i] = (char)val->elements[i];
+                }
+                contents[val->size] = 0;
+            }
+            
+            char* cString() const {
+                return contents;
+            }
+
+            ~UTF8Buffer() {
+                delete[] contents;
+            }
+    };
 }
 
 #endif

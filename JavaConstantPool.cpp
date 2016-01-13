@@ -70,13 +70,12 @@ uint32_t JavaConstantPool::CtpReaderFloat(JavaConstantPool* ctp, Reader& reader,
 uint32_t JavaConstantPool::CtpReaderUTF8(JavaConstantPool* ctp, Reader& reader, uint32_t index) {
     ctp->ctpDef[index] = reader.cursor;
     uint16_t len = reader.readU2();
-    char* str = (char*)malloc(sizeof(char) * (len + 1));
+    char* str = new char[len + 1];
     for (uint32_t i = 0; i < len; i++) 
         str[i] = reader.readU1();
     str[len] = 0;
-    // reader.cursor += len;
     PRINT_DEBUG(JWASM_LOAD, 0, COLOR_NORMAL, "; [%5d] <utf8>\tutf:%s\n", index, str);
-    free(str);
+    delete[] str;
     return 1;
 }
 
@@ -139,12 +138,15 @@ uint32_t JavaConstantPool::CtpReaderDouble(JavaConstantPool* ctp, Reader& reader
 JavaConstantPool::JavaConstantPool(JavaClass* cl, Reader& reader, uint32_t size) {
     ctpSize = size;
     classDef = cl;
-    
+   
     // store type
     ctpType = new uint8_t[ctpSize];
     // store data
     ctpDef = new int32_t[ctpSize];
 
+    ctpRes = (void**)malloc(sizeof(void*) * ctpSize);
+    memset(ctpRes, 0, sizeof(void*) * ctpSize);
+    
     uint32_t cur = 1;
     while (cur < ctpSize) {
         uint8_t curType = reader.readU1();
@@ -154,5 +156,83 @@ JavaConstantPool::JavaConstantPool(JavaClass* cl, Reader& reader, uint32_t size)
 }
 
 JavaConstantPool::~JavaConstantPool() {
-
+    //TODO:
+    delete[] ctpType;
+    delete[] ctpDef;
 }
+
+const UTF8* JavaConstantPool::UTF8At(uint32_t entry) {
+    if (!((entry > 0) && (entry < ctpSize) && typeAt(entry) == ConstantUTF8)) {
+        fprintf(stderr, "Malformed class %s\n", UTF8Buffer(classDef->name).cString());
+        exit(1);
+    }
+    
+    if (!ctpRes[entry]) {
+        Reader reader(classDef->bytes, ctpDef[entry]);
+        uint16_t len = reader.readU2();
+        uint16_t* buf = (uint16_t*)malloc(sizeof(uint16_t) * len);
+        uint32_t n = 0;
+        uint32_t i = 0;
+
+        while (i < len) {
+            uint32_t cur = reader.readU1();
+            if (cur & 0x80) {
+                uint32_t y = reader.readU1();
+                if (cur & 0x20) {
+                    uint32_t z = reader.readU1();
+                    cur = ((cur & 0x0f) << 12) +
+                        ((y & 0x3f) << 6) +
+                        (z & 0x3f);
+                    i += 3;
+                } else {
+                    cur = ((cur & 0x1f) << 6) +
+                        (y & 0x3f);
+                    i += 2;
+                }
+            } else {
+                ++i;
+            }
+            buf[n] = ((uint16_t)cur);
+            ++n;
+        }
+        JavaClassLoader* loader = classDef->classLoader;
+        const UTF8* utf8 = loader->hashUTF8->lookupOrCreateReader(buf, n);
+        ctpRes[entry] = const_cast<UTF8*>(utf8);
+
+        PRINT_DEBUG(JWASM_LOAD, 0, COLOR_NORMAL, "; [%5d] <utf8>\t\"%s\"\n", entry, 
+                UTF8Buffer(utf8).cString());
+    }
+    return (const UTF8*)ctpRes[entry];
+}
+
+CommonJavaClass* JavaConstantPool::isClassLoaded(uint32_t entry) {
+    if (!((entry > 0) && (entry < ctpSize) && typeAt(entry) == ConstantClass)) {
+        fprintf(stderr, "Malformed class %s\n", UTF8Buffer(classDef->name).cString());
+        exit(1);
+    }
+
+    CommonJavaClass* res = (CommonJavaClass*)ctpRes[entry];
+    if (res == NULL) {
+        printf("res == NULL\n");
+        JavaClassLoader* loader = classDef->classLoader;
+        const UTF8* name = UTF8At(ctpDef[entry]);
+        res = loader->lookupClassOrArray(name);
+        ctpRes[entry] = res;
+    }
+    return res;
+}
+
+const UTF8* JavaConstantPool::resolveClassName(uint32_t index) {    
+    CommonJavaClass* cl = isClassLoaded(index);
+    
+    // if (cl) return cl->name;
+    // else return UTF8At(ctpDef[index]);
+    return NULL;
+}
+
+
+
+
+
+
+

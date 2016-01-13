@@ -90,7 +90,13 @@ void JavaClass::readClass() {
 
     uint32_t ctpSize = reader.readU2();
     ctpInfo = new JavaConstantPool(this, reader, ctpSize);
+    
+    access |= reader.readU2();
+    
+    if (!isPublic(access)) access |= ACC_PRIVATE;
 
+    const UTF8* thisClassName = ctpInfo->resolveClassName(reader.readU2());
+    
 }
 
 void JavaClass::getMinimalJDKVersion(uint16_t major, uint16_t minor, uint16_t& JDKMajor, uint16_t& JDKMinor,

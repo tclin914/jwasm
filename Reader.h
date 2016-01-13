@@ -11,10 +11,15 @@ namespace jwasm {
         public:
             ClassBytes(int l) {
                 size = l;
+                elements = new uint8_t[l];
+            }
+
+            ~ClassBytes() {
+                delete[] elements;
             }
 
             uint32_t size;
-            uint8_t elements[1];
+            uint8_t *elements;
     };
 
     class Reader {
