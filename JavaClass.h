@@ -61,7 +61,7 @@ namespace jwasm {
 
     class JavaClass : public CommonJavaClass {
         public:
-            JavaClass(JavaClassLoader* loader, const UTF8* name);
+            JavaClass(JavaClassLoader* loader, const UTF8* name, ClassBytes* bytes);
             ~JavaClass();
             
             uint16_t virtualFields_count;

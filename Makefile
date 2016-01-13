@@ -1,6 +1,6 @@
 all: jwasm
 
-OBJ = JavaClassLoader.o UTF8.o Reader.o
+OBJ = JavaClassLoader.o UTF8.o Reader.o JavaClass.o
 
 jwasm: jwasm.cpp $(OBJ) 
 	g++ $< -o $@ $(OBJ)
@@ -8,7 +8,7 @@ jwasm: jwasm.cpp $(OBJ)
 JavaClassLoader.o: JavaClassLoader.cpp
 	g++ $< -c -o $@
 
-UTF8.O: UTF8.cpp
+UTF8.o: UTF8.cpp
 	g++ $< -c -o $@
 
 Reader.o: Reader.cpp

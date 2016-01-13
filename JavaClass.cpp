@@ -1,5 +1,10 @@
-
+#include <cstdio>
 #include "JavaClass.h"
+#include "debug.h"
+
+#define JWASM_LOAD 4
+
+using namespace jwasm;
 
 JavaAttribute::JavaAttribute(const UTF8* name, uint32_t length, uint32_t offset) {
     this->start = offset;
@@ -9,30 +14,33 @@ JavaAttribute::JavaAttribute(const UTF8* name, uint32_t length, uint32_t offset)
 
 JavaAttribute* JavaClass::lookupAttribute(const UTF8* key) {
     for (uint32_t i = 0; i < attributes_count; ++i) {
-        JavaAttribute* cur = &(attributes[i]);
-        if (strcmp(cur->name, key) == 0) return cur;
+        JavaAttribute* cur = attributes[i];
+        if (cur->name->equals(key)) return cur;
     }
+    return NULL;
 }
 
 JavaAttribute* JavaField::lookupAttribute(const UTF8* key) {
     for (uint32_t i = 0; i < attributes_count; ++i) {
-        JavaAttribute* cur = &(attributes[i]);
-        if (strcmp(cur->name, key) == 0) return cur;
+        JavaAttribute* cur = attributes[i];
+        if (cur->name->equals(key)) return cur;
     }
+    return NULL;
 }
 
 JavaAttribute* JavaMethod::lookupAttribute(const UTF8* key) {
     for (uint32_t i = 0; i < attributes_count; ++i) {
-        JavaAttribute* cur = &(attributes[i]);
-        if (strcmp(cur->name, key) == 0) return cur;
+        JavaAttribute* cur = attributes[i];
+        if (cur->name->equals(key)) return cur;
     }
+    return NULL;
 }
 
 //TODO:destructor
 CommonJavaClass::~CommonJavaClass() {
 }
 
-Class::~Class() {
+JavaClass::~JavaClass() {
 }
 
 JavaField::~JavaField() {
@@ -41,7 +49,7 @@ JavaField::~JavaField() {
 JavaMethod::~JavaMethod() {
 }
 
-CommonJavaClass::CommonJavaClass(JwasmClassLoader* loader, const UTF8* n) {
+CommonJavaClass::CommonJavaClass(JavaClassLoader* loader, const UTF8* n) {
     name = n;
     classLoader = loader;
     interfaces_count = 0;
@@ -49,14 +57,25 @@ CommonJavaClass::CommonJavaClass(JwasmClassLoader* loader, const UTF8* n) {
     super = 0;
 }
 
-JavaClass::JavaClass(JwasmClassLoader* loader, const UTF8* n) : CommonJavaClass(loader, n) { 
+JavaClass::JavaClass(JavaClassLoader* loader, const UTF8* n, ClassBytes* bytes) : CommonJavaClass(loader, n) { 
     access = JWASM_CLASS;
     virtualFields_count = 0;
     staticFields_count = 0;
     virtualMethods_count = 0;
     staticMethods_count = 0;
-    attributes_count = 0
+    attributes_count = 0;
 }
+
+void JavaClass::readClass() {
+    PRINT_DEBUG(JWASM_LOAD, 0, LIGHT_GREEN, "readClass \t\n");
+    // PRINT_DEBUG(JWASM_LOAD, 0, DARK_MAGENTA, "%s\n", );
+
+}
+
+
+
+
+
 
 
 

@@ -1,5 +1,6 @@
 #include <map>
 #include <cstdlib>
+#include <cstdio>
 
 #include "JavaClassLoader.h"
 #include "JavaClass.h"
@@ -28,6 +29,7 @@ JavaClass* JavaClassLoader::internalLoad(const UTF8* name, bool doResolve) {
     CommonJavaClass* cl = lookupClass(name);
     if (!cl) {
         bytes = openName(name);
+        std::cout << "openName\n";
         if (bytes != NULL) {
             cl = constructClass(name, bytes);                 
         }
@@ -47,12 +49,16 @@ ClassBytes* JavaClassLoader::openName(const UTF8* name) {
     for (int32_t i = 0; i < name->size; ++i)
         asciiz[i] = name->elements[i];
     asciiz[name->size] = 0;
-    ClassBytes* res = Reader::openFile(this, asciiz);    
+    
+    char* buf = (char*)malloc(sizeof(char) * (name->size + 7));
+    sprintf(buf, "%s.class", asciiz);
+
+    ClassBytes* res = Reader::openFile(this, buf);    
 }
 
 JavaClass* JavaClassLoader::constructClass(const UTF8* name, ClassBytes* bytes) {
-    JavaClass* res = NULL;
-
+    JavaClass* res = new JavaClass(this, name, bytes);
+    res->readClass();
     return res;
 }
 
