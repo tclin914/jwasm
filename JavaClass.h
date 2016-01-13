@@ -93,6 +93,12 @@ namespace jwasm {
             void readFields(Reader& reader);
             void readMethods(Reader& reader);
             void readClass();
+
+            static void getMinimalJDKVersion(uint16_t major, uint16_t minor, uint16_t& JDKMajor, 
+                    uint16_t& JDKMinor, uint16_t& JDKBuild);
+            bool isClassVersionSupported(uint16_t major, uint16_t minor);
+        private:
+            ClassBytes* bytes;
     };
 
     class JavaField {
