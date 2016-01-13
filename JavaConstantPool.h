@@ -52,6 +52,18 @@ namespace jwasm {
             static uint32_t CtpReaderLong(JavaConstantPool* ctp, Reader& reader, uint32_t index);
             static uint32_t CtpReaderDouble(JavaConstantPool* ctp, Reader& reader, uint32_t index);
 
+            static const uint32_t ConstantUTF8;
+            static const uint32_t ConstantInteger;
+            static const uint32_t ConstantFloat;
+            static const uint32_t ConstantLong;
+            static const uint32_t ConstantDouble;
+            static const uint32_t ConstantClass;
+            static const uint32_t ConstantString;
+            static const uint32_t ConstantFieldref;
+            static const uint32_t ConstantMethodref;
+            static const uint32_t ConstantInterfaceMethodref;
+            static const uint32_t ConstantNameAndType;
+
             typedef uint32_t (*ctpReader)(JavaConstantPool*, Reader&, uint32_t);
             static ctpReader funcsReader[16];
 

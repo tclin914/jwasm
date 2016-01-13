@@ -99,6 +99,7 @@ namespace jwasm {
             bool isClassVersionSupported(uint16_t major, uint16_t minor);
         private:
             ClassBytes* bytes;
+            JavaConstantPool* ctpInfo;
     };
 
     class JavaField {

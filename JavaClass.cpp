@@ -1,12 +1,12 @@
 #include <cstdio>
 #include <assert.h>
 #include "JavaClass.h"
+#include "JavaConstantPool.h"
 #include "Reader.h"
 #include "debug.h"
 
 #define MAGIC 0xcafebabe
 #define JWASM_LOAD 4
-
 
 using namespace jwasm;
 
@@ -39,7 +39,6 @@ JavaAttribute* JavaMethod::lookupAttribute(const UTF8* key) {
     }
     return NULL;
 }
-
 CommonJavaClass::~CommonJavaClass() {
 //TODO:
 }
@@ -88,6 +87,9 @@ void JavaClass::readClass() {
     uint16_t minor = reader.readU2();
     uint16_t major = reader.readU2();
     isClassVersionSupported(major, minor);
+
+    uint32_t ctpSize = reader.readU2();
+    ctpInfo = new JavaConstantPool(this, reader, ctpSize);
 
 }
 
