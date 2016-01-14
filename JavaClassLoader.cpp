@@ -40,7 +40,6 @@ JavaClass* JavaClassLoader::internalLoad(const UTF8* name, bool doResolve) {
         }
 
     }
-
 }
 
 CommonJavaClass* JavaClassLoader::lookupClass(const UTF8* name) {

@@ -45,7 +45,6 @@ void mainCompilerStart(const char* name) {
         }
            
         const UTF8* utf8 = loader->asciizConstructUTF8(realName);
-        utf8->dump();    
         JavaClass* cl = loader->loadName(utf8, true, true);
 
     }

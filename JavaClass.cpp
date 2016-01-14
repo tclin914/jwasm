@@ -41,19 +41,19 @@ JavaAttribute* JavaMethod::lookupAttribute(const UTF8* key) {
     return NULL;
 }
 CommonJavaClass::~CommonJavaClass() {
-//TODO:
+    // TODO:
 }
 
 JavaClass::~JavaClass() {
-//TODO:
+    // TODO:
 }
 
 JavaField::~JavaField() {
-//TODO:
+    // TODO:
 }
 
 JavaMethod::~JavaMethod() {
-//TODO:
+    // TODO:
 }
 
 CommonJavaClass::CommonJavaClass(JavaClassLoader* loader, const UTF8* n) {
@@ -79,6 +79,15 @@ JavaField::JavaField(JavaClass* cl, const UTF8* N, const UTF8* T, uint16_t A) {
     type = T;
     classDef = cl;
     access = A;
+    // TODO:
+}
+
+JavaMethod::JavaMethod(JavaClass* cl, const UTF8* N, const UTF8* T, uint16_t A) {
+    name = N;
+    type = T;
+    classDef = cl;
+    access = A;
+    // TODO:
 }
 
 JavaAttribute* JavaClass::readAttributes(Reader& reader, uint16_t& size) {
@@ -113,14 +122,34 @@ void JavaClass::readFields(Reader& reader) {
             virtualFields.push_back(field);
             virtualFields_count++;
         }
-        // field->attributes = readAttributes(reader, field->attributes_count);
+        field->attributes = readAttributes(reader, field->attributes_count);
+    }
+}
+
+void JavaClass::readMethods(Reader& reader) {
+    uint16_t nbMethods = reader.readU2();
+    for (int i = 0; i < nbMethods; i++) {
+        PRINT_DEBUG(JWASM_LOAD, 0, LIGHT_BLUE, "readMethod\n");
+        uint16_t access = reader.readU2();
+        const UTF8* name = ctpInfo->UTF8At(reader.readU2());
+        const UTF8* type = ctpInfo->UTF8At(reader.readU2());
+        JavaMethod* method = new JavaMethod(this, name, type, access);
+        if (isStatic(access)) {
+            staticMethods.push_back(method);
+            staticMethods_count++;
+        } else {
+            virtualMethods.push_back(method);
+            virtualMethods_count++;
+        }
+        method->attributes = readAttributes(reader, method->attributes_count);
     }
 }
 
 void JavaClass::readParents(Reader& reader) {
     uint16_t superEntry = reader.readU2();
     if (superEntry) {
-        const UTF8* superUTF8 = ctpInfo->resolveClassName(superEntry);
+        // TODO:Bug
+        // const UTF8* superUTF8 = ctpInfo->resolveClassName(superEntry);
         // TODO:not yet set class path for searching parent class
         // super = classLoader->loadName(superUTF8, false, true);
         // super->name->dump();
@@ -137,7 +166,7 @@ void JavaClass::readParents(Reader& reader) {
 
 
 void JavaClass::readClass() {
-    PRINT_DEBUG(JWASM_LOAD, 0, LIGHT_GREEN, "readClass \t");
+    PRINT_DEBUG(JWASM_LOAD, 0, LIGHT_BLUE, "readClass \t");
     PRINT_DEBUG(JWASM_LOAD, 0, DARK_MAGENTA, "%s\n", UTF8Buffer(name).cString());
     
     Reader reader(bytes);
@@ -164,7 +193,11 @@ void JavaClass::readClass() {
     }
 
     readParents(reader);
-    // readFields(reader);
+    readFields(reader);
+    readMethods(reader);
+    // const UTF8* t = ctpInfo->UTF8At(22);
+    // const UTF8* p = ctpInfo->UTF8At(8);
+    // const UTF8* R = ctpInfo->UTF8At(29);
 }
 
 void JavaClass::getMinimalJDKVersion(uint16_t major, uint16_t minor, uint16_t& JDKMajor, uint16_t& JDKMinor,
