@@ -1,5 +1,5 @@
-#ifndef JWASM_CLASSLOADER_H
-#define JWASM_CLASSLOADER_H
+#ifndef JWASM_JAVA_CLASS_LOADER_H
+#define JWASM_JAVA_CLASS_LOADER_H
 
 namespace jwasm {
     class UTF8;

@@ -1,3 +1,6 @@
+#ifndef JWASM_MAP_H
+#define JWASM_MAP_H
+
 #include <map>
 #include "UTF8.h"
 
@@ -15,3 +18,5 @@ namespace jwasm {
     };
 
 }
+
+#endif

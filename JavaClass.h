@@ -1,5 +1,5 @@
-#ifndef JWASM_JAVACLASS_H
-#define JWASM_JAVACLASS_H
+#ifndef JWASM_JAVA_CLASS_H
+#define JWASM_JAVA_CLASS_H
 
 #include <stdint.h>
 #include <vector>

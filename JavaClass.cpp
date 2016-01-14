@@ -143,6 +143,7 @@ void JavaClass::readMethods(Reader& reader) {
         }
         method->attributes = readAttributes(reader, method->attributes_count);
     }
+    // TODO:
 }
 
 void JavaClass::readParents(Reader& reader) {
@@ -198,6 +199,7 @@ void JavaClass::readClass() {
     // const UTF8* t = ctpInfo->UTF8At(22);
     // const UTF8* p = ctpInfo->UTF8At(8);
     // const UTF8* R = ctpInfo->UTF8At(29);
+    attributes = readAttributes(reader, attributes_count);
 }
 
 void JavaClass::getMinimalJDKVersion(uint16_t major, uint16_t minor, uint16_t& JDKMajor, uint16_t& JDKMinor,

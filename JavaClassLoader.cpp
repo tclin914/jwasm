@@ -63,6 +63,7 @@ ClassBytes* JavaClassLoader::openName(const UTF8* name) {
 JavaClass* JavaClassLoader::constructClass(const UTF8* name, ClassBytes* bytes) {
     JavaClass* res = new JavaClass(this, name, bytes);
     res->readClass();
+    // TODO:
     return res;
 }
 
