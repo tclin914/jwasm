@@ -205,6 +205,7 @@ const UTF8* JavaConstantPool::UTF8At(uint32_t entry) {
         PRINT_DEBUG(JWASM_LOAD, 0, DARK_YELLOW, "; [%5d] <utf8>\t\"%s\"\n", entry, 
                 UTF8Buffer(utf8).cString());
     }
+    ((const UTF8*)ctpRes[entry])->dump();
     return (const UTF8*)ctpRes[entry];
 }
 

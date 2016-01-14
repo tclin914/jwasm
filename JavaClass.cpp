@@ -196,9 +196,7 @@ void JavaClass::readClass() {
     readParents(reader);
     readFields(reader);
     readMethods(reader);
-    // const UTF8* t = ctpInfo->UTF8At(22);
-    // const UTF8* p = ctpInfo->UTF8At(8);
-    // const UTF8* R = ctpInfo->UTF8At(29);
+    
     attributes = readAttributes(reader, attributes_count);
 }
 

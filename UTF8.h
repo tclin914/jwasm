@@ -15,12 +15,19 @@ namespace jwasm {
         friend class UTF8Map;
 
         public:
-            UTF8(int32_t n) { size = n;}
+            UTF8(int32_t n) { 
+                size = n;
+                elements = new uint16_t[n];
+            }
+
+            ~UTF8() {
+                delete[] elements;
+            }
 
             int32_t size;
 
-            uint16_t elements[1];
-            // uint16_t* elements;
+            // uint16_t elements[1];
+            uint16_t* elements;
 
             const UTF8* extract(UTF8Map* map, uint32_t start, uint32_t len) const;
 
