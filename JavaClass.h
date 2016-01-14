@@ -21,7 +21,8 @@ namespace jwasm {
     class JavaAttribute {
         public:
             JavaAttribute(const UTF8* name, uint32_t length, uint32_t offset);
-            
+            JavaAttribute() {};
+
             const UTF8* name;
             uint32_t start;
             uint32_t size;
@@ -79,7 +80,8 @@ namespace jwasm {
             JavaConstantPool *constantPool;
 
             uint16_t attributes_count;
-            std::vector<JavaAttribute*> attributes;
+            // std::vector<JavaAttribute*> attributes;
+            JavaAttribute* attributes;
 
             uint16_t minJDKVersionMajor, minJDKVersionMinor, minJDKVersionBuild;
 
@@ -89,6 +91,7 @@ namespace jwasm {
             JavaAttribute* lookupAttribute(const UTF8* key);
             JavaConstantPool* getConstantPool() const { return constantPool; }
 
+            JavaAttribute* readAttributes(Reader& reader, uint16_t& size);
             void readParents(Reader& reader);
             void readFields(Reader& reader);
             void readMethods(Reader& reader);
@@ -112,7 +115,8 @@ namespace jwasm {
             const UTF8* type;
 
             uint16_t attributes_count;
-            std::vector<JavaAttribute*> attributes;
+            // std::vector<JavaAttribute*> attributes;
+            JavaAttribute* attributes;
 
             JavaClass* classDef;
 
@@ -136,7 +140,8 @@ namespace jwasm {
             const UTF8* type;
 
             uint16_t attributes_count;
-            std::vector<JavaAttribute*> attributes;
+            // std::vector<JavaAttribute*> attributes;
+            JavaAttribute* attributes;
 
             JavaClass* classDef;
 

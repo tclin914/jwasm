@@ -159,6 +159,7 @@ JavaConstantPool::~JavaConstantPool() {
     //TODO:
     delete[] ctpType;
     delete[] ctpDef;
+    free(ctpRes);
 }
 
 const UTF8* JavaConstantPool::UTF8At(uint32_t entry) {
@@ -198,8 +199,9 @@ const UTF8* JavaConstantPool::UTF8At(uint32_t entry) {
         JavaClassLoader* loader = classDef->classLoader;
         const UTF8* utf8 = loader->hashUTF8->lookupOrCreateReader(buf, n);
         ctpRes[entry] = const_cast<UTF8*>(utf8);
+        free(buf);
 
-        PRINT_DEBUG(JWASM_LOAD, 0, COLOR_NORMAL, "; [%5d] <utf8>\t\"%s\"\n", entry, 
+        PRINT_DEBUG(JWASM_LOAD, 0, DARK_YELLOW, "; [%5d] <utf8>\t\"%s\"\n", entry, 
                 UTF8Buffer(utf8).cString());
     }
     return (const UTF8*)ctpRes[entry];
@@ -213,7 +215,6 @@ CommonJavaClass* JavaConstantPool::isClassLoaded(uint32_t entry) {
 
     CommonJavaClass* res = (CommonJavaClass*)ctpRes[entry];
     if (res == NULL) {
-        printf("res == NULL\n");
         JavaClassLoader* loader = classDef->classLoader;
         const UTF8* name = UTF8At(ctpDef[entry]);
         res = loader->lookupClassOrArray(name);
@@ -223,10 +224,9 @@ CommonJavaClass* JavaConstantPool::isClassLoaded(uint32_t entry) {
 }
 
 const UTF8* JavaConstantPool::resolveClassName(uint32_t index) {    
-    CommonJavaClass* cl = isClassLoaded(index);
-    
-    // if (cl) return cl->name;
-    // else return UTF8At(ctpDef[index]);
+    CommonJavaClass* cl = isClassLoaded(index); 
+    if (cl) return cl->name;
+    else return UTF8At(ctpDef[index]);
     return NULL;
 }
 

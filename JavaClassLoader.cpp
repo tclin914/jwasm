@@ -17,10 +17,10 @@ JavaClassLoader::JavaClassLoader() {
 }
 
 JavaClassLoader::~JavaClassLoader() {
-//TODO
+//TODO:
+    delete hashUTF8;
+    delete classes;
 }
-
-
 
 const UTF8* JavaClassLoader::asciizConstructUTF8(const char* asciiz) {
     return hashUTF8->lookupOrCreateAsciiz(asciiz);
@@ -35,7 +35,6 @@ JavaClass* JavaClassLoader::internalLoad(const UTF8* name, bool doResolve) {
     CommonJavaClass* cl = lookupClass(name);
     if (!cl) {
         bytes = openName(name);
-        std::cout << "openName\n";
         if (bytes != NULL) {
             cl = constructClass(name, bytes);                 
         }
